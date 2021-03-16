@@ -24,15 +24,15 @@
 ////
 ////}
 ////====3.2自定义类型 
-////class A{
+////class a{
 ////public:
 ////
-////	A(){
-////		cout << "A()" << endl;
+////	a(){
+////		cout << "a()" << endl;
 ////	}
-////	~A(){
+////	~a(){
 ////		
-////		cout << "~A()" << endl;
+////		cout << "~a()" << endl;
 ////	}
 ////private:
 ////
@@ -41,7 +41,7 @@
 ////
 ////void test(){
 ////
-////	A* mpa = (A*)malloc(sizeof(A));	//1.只进行申请空间
+////	a* mpa = (a*)malloc(sizeof(a));	//1.只进行申请空间
 ////
 ////	free(mpa);
 ////	cout << "------------" << endl;
@@ -49,10 +49,10 @@
 ////
 ////	//自定义类型: new: 申请空间+调用构造函数进行空间内容的初始化
 ////	//需要存在默认构造,(无参)
-////	A* pal = new A;	//1.先申请空间=2.调用构造函数进行初始化
+////	a* pal = new a;	//1.先申请空间=2.调用构造函数进行初始化
 ////
 ////
-////	A* pal2 = new A;
+////	a* pal2 = new a;
 ////	//首先调用析构函数完成资源的清理,+再进行空间的释放
 ////	//1.先对于顺序表中所指的资源进行释放
 ////	//2.再对于顺序表本身进行释放
@@ -61,45 +61,45 @@
 ////
 ////	//不能使用带参构造对多个对象进行空间申请和初始化
 ////	//不存在默认构造
-////	A* arrA = new A[6];
-////	delete[] arrA;		//这里的调用函数是根据数组的大小进行调用构造函数
+////	a* arra = new a[6];
+////	delete[] arra;		//这里的调用函数是根据数组的大小进行调用构造函数
 ////}
 //
 ////=====4.operator new/operator delete函数
-////C++中的全局函数
+////c++中的全局函数
 //
 ////void test(){
 ////	
 ////	//operator new 不是new的运算符重载函数
-////	//void* operator new(size_t n);
+////	void* operator new(size_t n);
 ////	//全写
-////	//void* ptr = operator new(sizeof(int));
+////	void* ptr = operator new(sizeof(int));
 ////	////简写
-////	//void* ptr2 = new sizeof(int);
+////	void* ptr2 = new sizeof(int);
 ////
 ////	//operator delete不是delete的运算符重载函数
-////	//void operator delete(void* ptr); 
-////	/*void* ptr = nullptr;
+////	void operator delete(void* ptr); 
+////	void* ptr = nullptr;
 ////	operator delete(ptr);
-////	delete ptr;*/
+////	delete ptr;
 ////
 ////	//==========================
 ////	//使用方法:类似于malloc 和free
 ////	//operator new: malloc +异常
 ////
-////	//int* ptr = (int*)operator new (0x7fffffffffff);//申请空间失败,抛出异常返回空值
+////	int* ptr = (int*)operator new (0x7fffffffffff);
 ////
-////	int* ptr2 = (int*)malloc(0x7fffffff);//如果是malloc则会返回指针空值,不会抛出异常
+////	int* ptr2 = (int*)malloc(0x7fffffff);
 ////
-////	//封装的free,对应operator new的执行
-////	//operator delete(ptr);
+////
+////	operator delete(ptr);
 ////	free(ptr2);
 ////}
-////=========================
-////class A{
+////////=========================
+////class a{
 ////
 ////public:
-////	A(int a = 10)
+////	a(int a = 10)
 ////		:_a(a)
 ////	{}
 ////
@@ -123,21 +123,21 @@
 ////
 ////	//自定义类型
 ////	//new: operator new-->malloc-->构造
-////	A* pa = new A;
+////	a* pa = new a;
 ////	//delete: 析构 -->operator delete-->free
 ////	delete pa;
 ////
-////	//连续--在空间申请好的时候,直接执行N次构造
-////	A* pa2 = new A[10];
-////	//delete []: 会执行一个N次的析构
+////	//连续--在空间申请好的时候,直接执行n次构造
+////	a* pa2 = new a[10];
+////	//delete []: 会执行一个n次的析构
 ////	delete[]pa2;
 ////
 ////
 ////}
-//
-//
+////
+////
 ////====内存池!!!
-////struct ListNode{
+////struct listnode{
 ////public:
 ////
 ////	//在类的内部进行定义的时候,如果加了对应的返回值,则可以确定为外部函数
@@ -145,8 +145,8 @@
 ////		
 ////		cout << "operator new" << endl;
 ////		//采用内存池的方式
-////		cout << "memory poll" << endl;
-////		allocator<ListNode>alloc;
+////		cout << "memory pool" << endl;
+////		allocator<listnode>alloc;
 ////		return alloc.allocate(1);		//一个元素的大小
 ////	
 ////	}
@@ -154,91 +154,91 @@
 ////	void operator delete(void* ptr){
 ////		
 ////		cout << "operator delete" << endl;
-////		allocator<ListNode>alloc;
-////		alloc.deallocate((ListNode*)ptr, 1);
+////		allocator<listnode>alloc;
+////		alloc.deallocate((listnode*)ptr, 1);
 ////		cout << "memory pool deallocate" << endl;
 ////
 ////	}
 ////
-////	ListNode(int data = 1)	//空间的初始化
+////	listnode(int data = 1)	//空间的初始化
 ////		:_data(data)
 ////	{
 ////		
-////		cout << "ListNode(int)" << endl;
+////		cout << "listnode(int)" << endl;
 ////	}
 ////
-////	~ListNode(){
+////	~listnode(){
 ////		
-////		cout << "~ListNode()" << endl;
+////		cout << "~listnode()" << endl;
 ////	}
 ////private:
 ////	int _data=0;
-////	ListNode* _next = nullptr;
+////	listnode* _next = nullptr;
 ////	
 ////};
 ////
-////class A{
 ////
-////
-////};
 ////void test(){
 ////
-////	//1.首先调用析构函数对内部的资源进行一个清理
-////	//2.在调用初始化
-////	ListNode* node = new ListNode;
+////
+////	listnode* node = new listnode;
+////
+////	cout << "----------" << endl;
 ////
 ////	delete node;
-////
-////	A* pa = new A;
-////	delete pa;
 ////
 ////}
 //
 ////========6.3 new 定义表达式
 ////对已分配的原始内存空间进行一个初始化,一半搭配内存池进行使用
-////class A{
-////
-////public:
-////	A(int a)
-////		:_a(a)
-////	{
-////		cout << "A(int)" << endl;
-////	}
-////	~A(){
-////		cout << "~A()" << endl;
-////	}
-////private:
-////	int _a;
-////};
-////void test(){
-////
-////	A* pa = (A*)malloc(sizeof(A));
-////	//初始化已有的空间
-////	
-////	//new定位表达式: new(指针)类型(参数列表)
-////	new (pa)A(10);
-////	pa->~A();	//在释放前将内部的资源全部清理掉,然后再进行空间的释放,不然容易会资源泄露
-////	
-////	free(pa);
-////
-////}
+//class a{
 //
-//
-////====
+//public:
+//	a(int a)
+//		:_a(a)
+//	{
+//		cout << "a(int)" << endl;
+//	}
+//	~a(){
+//		cout << "~a()" << endl;
+//	}
+//private:
+//	int _a;
+//};
 //void test(){
 //
+//	a* pa = (a*)malloc(sizeof(a));
+//	//初始化已有的空间
 //	
-//	//char* p = new char[0xffffff];
+//	//new定位表达式: new(指针)类型(参数列表)
+//	new (pa)a(10);
 //
-//	//char* p = (char*)malloc(0xffffffff);
+//	pa->~a();	//在释放前将内部的资源全部清理掉,然后再进行空间的释放,不然容易会资源泄露
+//	
+//	free(pa);
 //
 //}
 //
 //
+////====
+////void test(){
+////
+////	
+////	char* p = new char[0xffffff];
+////
+////	char* p = (char*)malloc(0xffffffff);
+////
+////}
+//
+//
+//
 //int main(){
-//	
+//
 //	test();
 //
 //	system("pause");
 //	return 0;
 //}
+//
+//
+//

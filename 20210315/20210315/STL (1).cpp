@@ -11,7 +11,7 @@ using namespace std;
 //	//string();
 //	string str;
 //
-//	//2.拷贝
+//	//2.将括号里面的字符串进行复制到copy
 //	//string(const string& str);
 //	string copy(str);
 //
@@ -59,7 +59,7 @@ using namespace std;
 //	str[3] = 'a';*/
 //
 //	//非const对象: char& operator[](size_t pos) const
-//	char& ref = str2[3];
+//	char& ref1 = str2[3];
 //	str2[3] = 'a';
 //
 //	//==在这里直接利用at可以对其直接进行赋值
@@ -113,7 +113,7 @@ using namespace std;
 //	}
 //}
 
-//====反向迭代器
+////====反向迭代器
 //void test(){
 //
 //	string str = "12345";
@@ -142,32 +142,32 @@ using namespace std;
 //}
 
 //====2.范围for
-//void test(){
-//	
-//	//==范围for:访问范围确定的序列
-//	int arr[] = { 1, 2, 3, 4, 5 };
-//	for (const auto& e : arr){
-//		
-//		cout << e << " ";
-//	}
-//	cout << endl;
-//
-//	for (auto& e : arr){
-//		
-//		e = 10;
-//	}
-//
-//	string str = "12345";
-//	//范围for:实际上就是通过迭代器进行实现的
-//	//		  支持迭代器访问的自定义类型都可以支持范围for
-//	for (auto& ch : str){
-//
-//		cout << ch << " ";
-//		ch = 'a';
-//	}
-//}
+void test(){
+	
+	//==范围for:访问范围确定的序列
+	int arr[] = { 1, 2, 3, 4, 5 };
+	for (const auto& e : arr){
+		
+		cout << e << " ";
+	}
+	cout << endl;
 
-//====3.for循环
+	for (auto& e : arr){
+		
+		e = 10;
+	}
+
+	string str = "12345";
+	//范围for:实际上就是通过迭代器进行实现的
+	//		  支持迭代器访问的自定义类型都可以支持范围for
+	for (auto& ch : str){
+
+		cout << ch << " ";
+		ch = 'a';
+	}
+}
+
+////====3.for循环
 //void test(){
 //	
 //	string str = "12345";
@@ -178,16 +178,17 @@ using namespace std;
 //	}
 //	cout << endl;
 //}
-
-//========对于string访问的方式
-//1.for循环+operator[]
-//2.迭代器
-//3.范围for
-//这三种方式都可以修改其内容
- 
-
-//========容量相关的接口size
+//
+////========对于string访问的方式
+////1.for循环+operator[]
+////2.迭代器
+////3.范围for
+////这三种方式都可以修改其内容
+// 
+//
+////========容量相关的接口size
 //void test(){
+//
 //
 //	string  str;
 //	cout << str.size() << endl;
@@ -217,8 +218,8 @@ using namespace std;
 //	str2.resize(2, 'b');	//如果变小,没有需要填充的位置则没有用
 //
 //}
-
-//====capacity
+//
+////====capacity
 //void test(){
 //
 //	string str = "123";
@@ -253,8 +254,8 @@ using namespace std;
 //	cap = str.capacity();
 //
 //}
-
-//====shrink接口
+//
+////====shrink接口
 //void test(){
 //
 //	string str = "123";
@@ -267,8 +268,8 @@ using namespace std;
 //	int cap = str.capacity();
 //
 //}
-
-//====push_back
+//
+////====push_back
 //void test(){
 //	
 //	//按照1.5倍的空间进行增容
@@ -290,8 +291,8 @@ using namespace std;
 //		}
 //	}
 //}
-
-//+=	类似于尾插
+//
+////+=	类似于尾插
 //void test(){
 //
 //	string str;
@@ -305,8 +306,8 @@ using namespace std;
 //	str.operator+=('5');	//123abc45
 //
 //}
-
-//append类似于相加
+//
+////append类似于相加
 //void test(){
 //
 //	string str;
@@ -327,28 +328,28 @@ using namespace std;
 //	str.append(str2.begin(), str2.end());	//1232abc123456mmmmmabcdefg123
 //
 //}
-
-//==insert
-void test(){
-
-	string str="123";
-	string str2 = "abc";
-
-	str.insert(0, str2);	//abc123
-
-	str.insert(4, str2, 1, 2);	//abc1bc23
-
-	str.insert(str.size(), "abc");	//abc1bc23abc
-
-	str.insert(5, "12345", 4);	//abc1b1234c23abc
-
-	str.insert(str.begin(), 2, '0');	//00abc1b1234c23abc
-
-	str.insert(str.end(), str2.begin(), str2.end());	//00abc1b1234c23abc123
-
-
-
-}
+//
+////==insert
+//void test(){
+//
+//	string str="123";
+//	string str2 = "abc";
+//
+//	str.insert(0, str2);	//abc123
+//
+//	str.insert(4, str2, 1, 2);	//abc1bc23
+//
+//	str.insert(str.size(), "abc");	//abc1bc23abc
+//
+//	str.insert(5, "12345", 4);	//abc1b1234c23abc
+//
+//	str.insert(str.begin(), 2, '0');	//00abc1b1234c23abc
+//
+//	str.insert(str.end(), str2.begin(), str2.end());	//00abc1b1234c23abc123
+//
+//
+//
+//}
 
 
 
