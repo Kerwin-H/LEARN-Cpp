@@ -159,6 +159,20 @@ void test5(){
 
 }
 
+//multiset
+void test(){
+	
+	int arr[] = { 1, 2, 3, 4, 4, 5, 5, 5, 7, 2 };		//数据可重复
+	multiset<int> m1(arr, arr + sizeof(arr) / sizeof(arr[0]));
+
+	for (auto& e : m1)
+		cout << e << " ";
+	cout << endl;
+}
+
+
+
+
 
 
 int main(){
