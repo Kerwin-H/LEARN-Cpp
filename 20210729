@@ -1,0 +1,132 @@
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+
+
+//1. 隐式类型转化：编译器在编译阶段自动进行，能转就转，不能转就编译失败
+//2. 显式类型转化：需要用户自己处理
+
+void test(){
+
+	int i = 1;
+	// 隐式类型转换
+	double d = i;
+	printf("%d, %.2f\n", i, d);
+	int* p = &i;
+	// 显示的强制类型转换
+	int address = (int)p;
+	printf("%x, %d\n", p, address);
+
+
+}
+
+//======四种可视化强制类型转换操作符=====
+//static_cast、reinterpret_cast、const_cast、dynamic_cast
+
+
+
+//==============static_cast====================非多态类型的转换（静态转换）
+//int main()
+//{
+//	double d = 12.34;
+//	int a = static_cast<int>(d);	//进行静态转换,显示的转成int
+//	cout << a << endl;
+//
+//	system("pause");
+//	return 0;
+//}
+
+//===============reinterpret_cast===================将一种类型转换为另一种不同的类型
+
+
+typedef void(*FUNC)();
+int DoSomething(int i)
+{
+	cout << "DoSomething" << endl;
+	return 0;
+}
+//
+//int main()
+//{
+//	//
+//	// reinterpret_cast可以编译器以FUNC的定义方式去看待DoSomething函数
+//	// 所以非常的BUG，下面转换函数指针的代码是不可移植的，所以不建议这样用
+//	// C++不保证所有的函数指针都被一样的使用，所以这样用有时会产生不确定的结果
+//	//
+//	FUNC f = reinterpret_cast< FUNC>(DoSomething);
+//	f();
+//
+//	system("pause");
+//	return 0;
+//}
+
+
+//================const_cast==================删除变量的const属性，方便赋值
+
+//int main()
+//{
+//	const int a = 2;
+//	int* p = const_cast< int*>(&a);
+//	*p = 5;
+//
+//	cout << a << endl;
+//
+//	system("pause");
+//	return 0;
+//}
+
+//================dynamic_cast==================将一个父类对象的指针/引用转换为子类对象的指针或引用
+
+class A
+{
+public:
+	virtual void f(){}
+};
+class B : public A
+{};
+void fun(A* pa)
+{
+	// dynamic_cast会先检查是否能转换成功，能成功则转换，不能则返回
+	B* pb1 = static_cast<B*>(pa);
+	B* pb2 = dynamic_cast<B*>(pa);		//可以对静态变量进行转换
+
+	cout << "pb1:" << pb1 << endl;
+	cout << "pb2:" << pb2 << endl;
+}
+
+//int main()
+//{
+//	A a;
+//	B b;
+//	fun(&a);
+//	fun(&b);
+//
+//	system("pause");
+//	return 0;
+//}
+
+//====================explicit=====================阻止经过转换构造函数进行的隐式转换的发生
+
+class A
+{
+public:
+	explicit A(int a)
+	{
+		cout << "A(int a)" << endl;
+	}
+	A(const A& a)
+	{
+		cout << "A(const A& a)" << endl;
+	}
+private:
+	int _a;
+};
+int main()
+{
+	A a1(1);
+	// 隐式转换-> A tmp(1); A a2(tmp);
+	A a2 = 1;		//阻止隐式转换的发生
+}
+
