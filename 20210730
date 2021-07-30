@@ -1,0 +1,182 @@
+#include <iostream>
+#include <mutex>
+#include <thread>
+using namespace std;
+
+
+////=======1.设计类只能在堆上创建对象=======将构造函数私有化,防止被人调用对其进行拷贝//提供静态成员函数,让其转成在堆上创建的对象
+//
+//class HeapOnly
+//{
+//public:
+//	static HeapOnly* CreateObject()		//静态转堆
+//	{
+//		return new HeapOnly;
+//	}
+//private:
+//	HeapOnly() {}
+//
+//	// C++98
+//	// 1.只声明,不实现。
+//	// 2.声明成私有
+//	HeapOnly(const HeapOnly&);
+//
+//		
+//	// C++11 
+//	HeapOnly(const HeapOnly&) = delete;
+//};
+//
+//
+//
+////=======2.设计类只能在栈上创建对象=======
+//
+//class StackOnly
+//{
+//public:
+//	static StackOnly CreateObject()
+//	{
+//		return StackOnly();
+//	}
+//private:
+//	StackOnly() {}		//构造函数私有化可创建
+//};
+//
+//
+//class StackOnly
+//{
+//public:
+//	StackOnly() {}
+//private:
+//	void* operator new(size_t size);		//将new在函数私有化进行创建可以直接防止在栈上发生对象的创建
+//	void operator delete(void* p);		//并且将delete进行私有声明
+//};
+//
+//
+////=======3.设计类不能被拷贝=======
+//
+//class CopyBan
+//{
+//	
+//
+//private:
+//	CopyBan(const CopyBan&);		//不能被拷贝只有两种情况  发生拷贝构造或者是进行 赋值运算符重载
+//	CopyBan& operator=(const CopyBan&);		//这样就不能被拷贝
+//	
+//};
+//
+////===================!!!!!在C++11中可以直接将默认的成员函数进行删除!!!!!
+//
+//class CopyBan
+//{
+//	
+//	CopyBan(const CopyBan&) = delete;		//直接删除		[成员函数]=delete
+//	CopyBan& operator=(const CopyBan&) = delete;
+//	
+//};
+//
+////=======4.设计类不能被继承=======
+//
+//class NonInherit	//C++98中直接将基类的构造函数进行私有化,这样的话就可以让对应让继承类无法调用构造函数,从而无法继承
+//{
+//public:
+//	static NonInherit GetInstance()
+//	{
+//		return NonInherit();
+//	}
+//private:
+//	NonInherit()
+//	{}
+//};
+//
+//class A final{};		//在C++11中直接利用final关键字进行修饰,这样就不会被继承
+
+
+//=======5.设计类只能创建一个对象=======
+
+//一个类只能创建一个对象，即单例模式，该模式可以保证系统中该类只有一个实例，并提供一个访问它的全局访问点，该实例被所有程序模块共享。
+
+// 懒汉
+// 优点：第一次使用实例对象时，创建对象。进程启动无负载。多个单例实例启动顺序自由控制。
+// 缺点：复杂
+
+class Singleton
+{
+public:
+	static Singleton* GetInstance() {
+		// 注意这里一定要使用Double-Check的方式加锁，才能保证效率和线程安全
+		if (nullptr == m_pInstance) {
+			m_mtx.lock();
+			if (nullptr == m_pInstance) {
+				m_pInstance = new Singleton();
+			}
+			m_mtx.unlock();
+		}
+		return m_pInstance;
+	}
+	// 实现一个内嵌垃圾回收类 
+	class CGarbo {
+	public:
+		~CGarbo(){
+			if (Singleton::m_pInstance)
+				delete Singleton::m_pInstance;
+		}
+	};
+	// 定义一个静态成员变量，程序结束时，系统会自动调用它的析构函数从而释放单例对象
+	static CGarbo Garbo;
+private:
+	// 构造函数私有
+	Singleton(){};
+	// 防拷贝
+	Singleton(Singleton const&);
+	Singleton& operator=(Singleton const&);
+	static Singleton* m_pInstance; // 单例对象指针
+	static mutex m_mtx; //互斥锁
+};
+
+Singleton* Singleton::m_pInstance = nullptr;
+Singleton::CGarbo Garbo;
+mutex Singleton::m_mtx;
+
+void func(int n) {
+	cout << Singleton::GetInstance() << endl;
+}
+//int main()
+//{
+//	thread t1(func, 10);
+//	thread t2(func, 10);
+//	t1.join();
+//	t2.join();
+//	cout << Singleton::GetInstance() << endl;
+//	cout << Singleton::GetInstance() << endl;
+//
+//	system("pause");
+//	return 0;
+//}
+
+//饿汉模式
+class Singleton
+{
+public:
+	static Singleton* GetInstance()
+	{
+		return &m_instance;
+	}
+
+private:
+	// 构造函数私有
+	Singleton(){};
+
+	// C++98 防拷贝
+	Singleton(Singleton const&);
+	Singleton& operator=(Singleton const&);
+
+	// or
+
+	// C++11
+	Singleton(Singleton const&) = delete;
+	Singleton& operator=(Singleton const&) = delete;
+
+	static Singleton m_instance;
+};
+Singleton Singleton::m_instance;
+
