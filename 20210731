@@ -1,0 +1,137 @@
+//归并排序
+
+void merge(int* arr, int begin, int mid, int end, int* tmp){
+	
+	//递增
+	int begin1 = begin;		//前半个区间
+	int end1 = mid;
+	
+	int begin2 = mid + 1;	//后半个区间
+	int end2 = end;
+
+	//辅助空间
+	int idx = begin;
+	
+	//合并有序的序列
+	//检查是否越界
+	while (begin1 <= end1&&begin2 <= end2){		//如果没有越界
+		
+		if (arr[begin1] <= arr[begin2])			//如果第一个元素小
+			tmp[idx++] = arr[begin1++];			//先将第一个输入
+
+		else
+			tmp[idx++] = arr[begin2++];			//否则,先将第二个输入
+	}
+	//上面的循环进行,直到结束
+	
+	//判断是否有没有合并的元素
+	if (begin1 <= end1)		//如果1中有剩余
+	
+		//直接将1中剩余的元素拷贝到序列中
+		memcpy(tmp + idx, arr + begin1, sizeof(int)*(end1 - begin1 + 1));
+	
+	if (begin2 <= end2)
+		//如果2中有剩余,直接将2中的拷贝过去
+		memcpy(tmp + idx, arr + begin2, sizeof(int)*(end2 - begin2 + 1));
+
+	//合并后的序列拷贝到原始的数据
+	memcpy(arr + begin, tmp + begin, sizeof(int)*(end - begin + 1));
+}
+
+//======================递归
+void _mergeSort(int* arr, int begin, int end, int* tmp){
+	
+	if (begin >= end)	//判空
+		return;
+
+	int mid = begin + (end - begin) / 2;		//找到中间元素
+
+	//先进行子序列的合并
+	_mergeSort(arr, begin, mid, tmp);
+	_mergeSort(arr, mid + 1, end, tmp);
+	//上面两部是对于子序列的合并,也就是将一个个的小点点进行合并
+
+	//合并两个有序的子序列
+	merge(arr, begin, mid, end, tmp);
+}
+void mergeSort(int* arr, int n){
+	
+	//申请辅助空间
+	int* tmp = (int*)malloc(sizeof(int)*n);		//申请空间方便存放
+	_mergeSort(arr, 0, n - 1, tmp);		//调用函数
+	
+	free(tmp);		//将申请用完的空间进行释放
+}
+
+
+//归并排序
+
+void merge(int* arr, int begin, int mid, int end, int* tmp){
+	
+	//递增
+	int begin1 = begin;		//前半个区间
+	int end1 = mid;
+	
+	int begin2 = mid + 1;	//后半个区间
+	int end2 = end;
+
+	//辅助空间
+	int idx = begin;
+	
+	//合并有序的序列
+	//检查是否越界
+	while (begin1 <= end1&&begin2 <= end2){		//如果没有越界
+		
+		if (arr[begin1] <= arr[begin2])			//如果第一个元素小
+			tmp[idx++] = arr[begin1++];			//先将第一个输入
+
+		else
+			tmp[idx++] = arr[begin2++];			//否则,先将第二个输入
+	}
+	//上面的循环进行,直到结束
+	
+	//判断是否有没有合并的元素
+	if (begin1 <= end1)		//如果1中有剩余
+	
+		//直接将1中剩余的元素拷贝到序列中
+		memcpy(tmp + idx, arr + begin1, sizeof(int)*(end1 - begin1 + 1));
+	
+	if (begin2 <= end2)
+		//如果2中有剩余,直接将2中的拷贝过去
+		memcpy(tmp + idx, arr + begin2, sizeof(int)*(end2 - begin2 + 1));
+
+	//合并后的序列拷贝到原始的数据
+	memcpy(arr + begin, tmp + begin, sizeof(int)*(end - begin + 1));
+}
+
+//=========================非递归
+void mergeSortNoR(int* arr, int n){
+
+	int* tmp = (int*)malloc(sizeof(int)*n);		//动态内存申请
+	//子序列的步长
+	int step = 1;		//步长也就是内部有一个元素步长为1,两个则为2
+	
+	while (step < n){		//步长最大就是原来的序列
+	
+		for (int idx = 0; idx < n; idx += 2 * step){  //注意这里,步长每次增加2!!!!!!!!
+
+			//找到两个待合并的子序列区间
+			//[begin,mid]  [mid+1,end]
+			int begin = idx;
+			int mid = idx + step - 1;
+			
+			//判断是否存在第二个子序列
+			if (mid >= n - 1)
+				continue;	//不存在第二个子序列,直接跳过
+			int end = idx + 2 * step - 1;
+			//判断第二个子序列是否越界
+			if (end > n)
+				end = n - 1;
+				
+			merge(arr, begin, mid, end, tmp);
+		}
+
+		//更新步长
+		step *= 2;
+	}
+}
