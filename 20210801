@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<int> avoidFlood(vector<int>& rains) {
+        int n=rains.size();
+        set<int> sun;
+        unordered_map<int,int> rainrain;
+        vector<int> ans(n,-1);//先暂时默认每个池子都带水
+        for(int i=0;i<n;i++){
+            if(rains[i]==0){
+                sun.insert(i);
+                ans[i]=1;//如果这天是晴天就把这里的值暂时改为1，因为后面如果这一天要抽水的话也会对这个进行改动，但是那时候一定是在这之后的
+            }
+            else{
+                auto res=rainrain.insert(make_pair(rains[i],i));
+            //insert的返回值是std::pair< std::unordered_map< int,int >::iterator,bool >
+            //如果之前有值会插入失败并且.second==false
+                if(res.second==false){//如果在这个池子之前也下过雨
+                    bool vis=true;//标记
+                    int k=0;
+                    for(auto &it:sun){
+                        if(it>=rainrain[rains[i]]&&it<=i){
+                            ans[it]=rains[i];
+                            rainrain[rains[i]]=i;//相当于我们找到了一天晴天把这个池子抽干净，那么这次下雨就相当于这个池子第一次下雨
+                            vis=false;
+                            sun.erase(it);//这个晴天我们抽水了所以要删除掉
+                            break;
+                        
+                        }
+                    }
+                    if(vis){//如果每一个都不符合条件证明没办法阻止洪水，直接返回空数组
+                        vector<int> an;
+                        return an;
+                    }
+                
+                }
+                
+            }
+            
+        }
+        return ans;
+    }
+
+};
