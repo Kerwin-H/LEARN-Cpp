@@ -1,0 +1,75 @@
+
+class UdpSocket{
+    private:
+        int _sockfd;    //私有成员是对应的操作句柄
+    public:
+        UdpSocket():_sockfd(-1){}   //构造函数对句柄初始化
+        //====1.创建套接字接口
+        bool Socket() { 
+            _sockfd = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);   //并且返回了对应的操作句柄
+            if (_sockfd < 0) {  //小于0创建失败返回错误
+                perror("socket error");
+                return false;
+            }
+            return true;    //创建成功返回true
+        }
+        //====2.绑定对应的地址信息
+        bool Bind(std::string &ip, uint16_t port){
+            struct sockaddr_in addr;    //对应的地址信息
+            addr.sin_family = AF_INET;  //选择对应的IPv4地址结构
+            addr.sin_port = htons(port);    //将16位数据主机转换成网络字节序
+            addr.sin_addr.s_addr = inet_addr(ip.c_str());   //转换后的网络字节序
+            socklen_t len = sizeof(struct sockaddr_in); //对应的字节长度
+            int ret;    //返回值
+            ret = bind(_sockfd, (struct sockaddr*)&addr, len);
+            if (ret < 0) {  //判断是否成功
+                perror("bind error");
+                return false;
+            }
+            return true;
+        }
+        //3.====发送数据
+        bool Send(std::string &data,const std::string &ip,
+                const int port){
+           struct sockaddr_in addr;    //对应的地址信息
+            addr.sin_family = AF_INET;  //选择对应的IPv4地址结构
+            addr.sin_port = htons(port);    //将16位数据主机转换成网络字节序
+            addr.sin_addr.s_addr = inet_addr(ip.c_str());   //转换后的网络字节序
+            socklen_t len = sizeof(struct sockaddr_in);
+            int ret = sendto(_sockfd, data.c_str(),     //发送
+                    data.size(), 0, (sockaddr*)&addr, len);
+            if (ret < 0) {  //是否成功判断
+                perror("sendto error");
+                return false;
+            }
+            return true;
+        }
+        //4.====接受数据
+        bool Recv(std::string *buf, 
+                std::string *ip = NULL, int *port = NULL) {
+            struct sockaddr_in addr;    //对应的socket地址
+            socklen_t len = sizeof(struct sockaddr_in);     //长度
+            char tmp[4096] = {0};   //接受数据的数组
+            int ret = recvfrom(_sockfd, tmp, 4096, 0,
+                    (sockaddr*)&addr, &len);    //接口函数的使用
+            if (ret < 0) {  //判断是否成功
+                perror("recvfrom error");
+                return false;
+            }
+            buf->assign(tmp, ret);//自带申请空间拷贝数据
+            if (ip != NULL) {   //将对应的网络IP转成实际的
+                *ip = inet_ntoa(addr.sin_addr);
+            }
+            if (port != NULL) { //将对应的网络字节序转成对应主机的
+                *port = ntohs(addr.sin_port);
+            }
+            return true;    //成功
+        }
+        //5.====关闭套字节接口
+        bool Close(){
+            if (_sockfd != -1) {    //如果存在则直接关闭
+                close(_sockfd);
+            }
+            return true;    
+        }
+};
